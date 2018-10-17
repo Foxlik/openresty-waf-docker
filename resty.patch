@@ -1,0 +1,58 @@
+diff --git a/src/Makefile b/src/Makefile
+index 2190434..bc72160 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -1,5 +1,5 @@
+ CC=gcc
+-CFLAGS=-c -O3 -Wall -Werror -fpic
++CFLAGS=-c -Ofast -Wall -fpic -flto -msse4.1 -msse4.2
+
+ SHARED_OPTS=-shared -o $(LIB_NAME) $(OBJ_NAME)
+
+diff --git a/lua-aho-corasick/Makefile b/lua-aho-corasick/Makefile
+index ee13e75..ea46475 100644
+--- a/lua-aho-corasick/Makefile
++++ b/lua-aho-corasick/Makefile
+@@ -21,19 +21,20 @@ AR_NAME = libac.a
+ #           Compile and link flags
+ #
+ #############################################################################
+-LUA_VERSION := 5.1
++LUA_VERSION := jit-2.1
+ PREFIX = /usr
+-LUA_INCLUDE_DIR := $(PREFIX)/include/lua$(LUA_VERSION)
+-SO_TARGET_DIR := $(PREFIX)/lib/lua/$(LUA_VERSION)
+-LUA_TARGET_DIR := $(PREFIX)/share/lua/$(LUA_VERSION)
++OPENRESTY_LUA = /usr/local/openresty/luajit
++LUA_INCLUDE_DIR := $(OPENRESTY_LUA)/include/lua$(LUA_VERSION)
++SO_TARGET_DIR := $(OPENRESTY_LUA)/lib/lua/$(LUA_VERSION)
++LUA_TARGET_DIR := $(OPENRESTY_LUA)/share/lua/$(LUA_VERSION)
+
+ # Available directives:
+ # -DDEBUG : Turn on debugging support
+ # -DVERIFY : To verify if the slow-version and fast-version implementations
+ #            get exactly the same result. Note -DVERIFY implies -DDEBUG.
+ #
+-CFLAGS = -msse2 -msse3 -msse4.1 -O3 #-g -DVERIFY
+-COMMON_FLAGS = -fvisibility=hidden -Wall $(CFLAGS) $(MY_CFLAGS) $(MY_CXXFLAGS)
++CFLAGS = -msse2 -msse3 -msse4.1 -msse4.2 -Ofast -flto #-g -DVERIFY
++COMMON_FLAGS = -fvisibility=hidden $(CFLAGS) $(MY_CFLAGS) $(MY_CXXFLAGS)
+
+ SO_CXXFLAGS = $(COMMON_FLAGS) -fPIC
+ SO_LFLAGS = $(COMMON_FLAGS)
+
+
+diff --git a/libinjection/src/Makefile b/libinjection/src/Makefile
+index f288176..b4aac84 100644
+--- a/libinjection/src/Makefile
++++ b/libinjection/src/Makefile
+@@ -6,7 +6,7 @@ AR=ar -r
+ CC=cc
+ LD=ld
+ LDSHARED=ld -shared
+-CFLAGS=-Wall -Wextra -Werror -pedantic -ansi -g -O3 -fPIC
++CFLAGS=-Wall -Wextra -Werror -pedantic -ansi -fPIC -Ofast -flto -msse4.1 -msse4.2 -msse3
+
+ INSTALL=install
+ PREFIX=/usr/local
+
